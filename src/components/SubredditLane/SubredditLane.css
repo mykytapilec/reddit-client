@@ -1,0 +1,32 @@
+.subreddit-lane {
+  min-width: 0;
+}
+
+.subreddit-lane__header {
+  margin-bottom: 16px;
+}
+
+.subreddit-lane__header h2 {
+  margin: 0;
+  color: #1a1a1b;
+  font-size: 20px;
+}
+
+.subreddit-lane__posts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.subreddit-lane__state {
+  margin: 0;
+  padding: 24px 16px;
+  border: 1px solid #edeff1;
+  border-radius: 8px;
+  color: #787c7e;
+  text-align: center;
+}
+
+.subreddit-lane__state--error {
+  color: #d93a00;
+}

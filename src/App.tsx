@@ -1,3 +1,4 @@
+import SubredditLane from './components/SubredditLane/SubredditLane';
 import './App.css';
 
 function App() {
@@ -9,7 +10,7 @@ function App() {
       </header>
 
       <section className="lanes" aria-label="Subreddit feeds">
-        <p className="lanes-empty">No subreddit feeds configured yet.</p>
+        <SubredditLane subreddit="javascript" />
       </section>
     </main>
   );
