@@ -6,9 +6,10 @@ import './SubredditLane.css';
 
 interface SubredditLaneProps {
   subreddit: string;
+  onRemove: (subreddit: string) => void;
 }
 
-function SubredditLane({ subreddit }: SubredditLaneProps) {
+function SubredditLane({ subreddit, onRemove }: SubredditLaneProps) {
   const [posts, setPosts] = useState<RedditPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,6 +49,15 @@ function SubredditLane({ subreddit }: SubredditLaneProps) {
     <section className="subreddit-lane">
       <header className="subreddit-lane__header">
         <h2>r/{subreddit}</h2>
+
+        <button
+          type="button"
+          className="subreddit-lane__remove"
+          onClick={() => onRemove(subreddit)}
+          aria-label={`Remove r/${subreddit}`}
+        >
+          Remove
+        </button>
       </header>
 
       {isLoading && <p className="subreddit-lane__state">Loading posts...</p>}
