@@ -3,6 +3,10 @@
 }
 
 .subreddit-lane__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 16px;
 }
 
@@ -10,6 +14,20 @@
   margin: 0;
   color: #1a1a1b;
   font-size: 20px;
+}
+
+.subreddit-lane__remove {
+  padding: 6px 10px;
+  border: 1px solid #d93a00;
+  border-radius: 4px;
+  color: #d93a00;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.subreddit-lane__remove:hover {
+  color: #ffffff;
+  background: #d93a00;
 }
 
 .subreddit-lane__posts {
