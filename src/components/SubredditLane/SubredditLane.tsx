@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
+import PostCard from '../PostCard/PostCard';
 import { fetchSubredditPosts } from '../../services/redditApi';
 import type { RedditPost } from '../../types/reddit';
-import PostCard from '../PostCard/PostCard';
 import './SubredditLane.css';
 
 interface SubredditLaneProps {
@@ -9,44 +9,62 @@ interface SubredditLaneProps {
   onRemove: (subreddit: string) => void;
 }
 
+type LaneStatus = 'loading' | 'success' | 'error';
+
 function SubredditLane({ subreddit, onRemove }: SubredditLaneProps) {
   const [posts, setPosts] = useState<RedditPost[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState<LaneStatus>('loading');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isActive = true;
+    let cancelled = false;
 
-    async function loadPosts() {
-      setIsLoading(true);
-      setError(null);
-
+    const loadPosts = async () => {
       try {
         const response = await fetchSubredditPosts(subreddit);
 
-        if (isActive) {
-          setPosts(response.data.children);
+        if (cancelled) {
+          return;
         }
+
+        setPosts(response.data.children);
+        setError(null);
+        setStatus('success');
       } catch {
-        if (isActive) {
-          setError('Failed to load subreddit posts.');
+        if (cancelled) {
+          return;
         }
-      } finally {
-        if (isActive) {
-          setIsLoading(false);
-        }
+
+        setPosts([]);
+        setError(`Failed to load r/${subreddit}.`);
+        setStatus('error');
       }
-    }
+    };
 
     void loadPosts();
 
     return () => {
-      isActive = false;
+      cancelled = true;
     };
   }, [subreddit]);
 
+  const handleRetry = async () => {
+    setStatus('loading');
+    setError(null);
+
+    try {
+      const response = await fetchSubredditPosts(subreddit);
+      setPosts(response.data.children);
+      setStatus('success');
+    } catch {
+      setPosts([]);
+      setError(`Failed to load r/${subreddit}.`);
+      setStatus('error');
+    }
+  };
+
   return (
-    <section className="subreddit-lane">
+    <article className="subreddit-lane">
       <header className="subreddit-lane__header">
         <h2>r/{subreddit}</h2>
 
@@ -60,24 +78,36 @@ function SubredditLane({ subreddit, onRemove }: SubredditLaneProps) {
         </button>
       </header>
 
-      {isLoading && <p className="subreddit-lane__state">Loading posts...</p>}
-
-      {!isLoading && error && (
-        <p className="subreddit-lane__state subreddit-lane__state--error">{error}</p>
+      {status === 'loading' && (
+        <div className="subreddit-lane__state" role="status">
+          <p>Loading posts...</p>
+        </div>
       )}
 
-      {!isLoading && !error && posts.length === 0 && (
-        <p className="subreddit-lane__state">No posts found.</p>
+      {status === 'error' && (
+        <div className="subreddit-lane__state subreddit-lane__state--error" role="alert">
+          <p>{error}</p>
+
+          <button type="button" onClick={() => void handleRetry()}>
+            Retry
+          </button>
+        </div>
       )}
 
-      {!isLoading && !error && posts.length > 0 && (
+      {status === 'success' && posts.length === 0 && (
+        <div className="subreddit-lane__state">
+          <p>No posts found.</p>
+        </div>
+      )}
+
+      {status === 'success' && posts.length > 0 && (
         <div className="subreddit-lane__posts">
           {posts.map((post) => (
             <PostCard key={post.data.id} post={post} />
           ))}
         </div>
       )}
-    </section>
+    </article>
   );
 }
 
