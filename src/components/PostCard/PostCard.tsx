@@ -10,22 +10,14 @@ function PostCard({ post }: PostCardProps) {
 
   return (
     <article className="post-card">
+      <a className="post-card__title" href={data.url} target="_blank" rel="noopener noreferrer">
+        <h3>{data.title}</h3>
+      </a>
+
       <div className="post-card__meta">
-        <span>r/{data.subreddit}</span>
-        <span>by u/{data.author}</span>
-      </div>
-
-      <h3 className="post-card__title">{data.title}</h3>
-
-      {data.selftext && <p className="post-card__text">{data.selftext}</p>}
-
-      <div className="post-card__footer">
+        <span>u/{data.author}</span>
         <span>{data.score} points</span>
         <span>{data.num_comments} comments</span>
-
-        <a href={`https://www.reddit.com${data.permalink}`} target="_blank" rel="noreferrer">
-          Open on Reddit
-        </a>
       </div>
     </article>
   );
