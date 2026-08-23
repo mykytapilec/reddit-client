@@ -18,12 +18,18 @@ const server = createServer(async (request, response) => {
       });
 
       response.end(JSON.stringify(data));
-    } catch {
+    } catch (error) {
+      console.error('Reddit proxy error:', error);
+
       response.writeHead(502, {
         'Content-Type': 'application/json',
       });
 
-      response.end(JSON.stringify({ message: 'Failed to fetch Reddit posts.' }));
+      response.end(
+        JSON.stringify({
+          message: 'Failed to fetch Reddit posts.',
+        }),
+      );
     }
 
     return;
@@ -33,7 +39,11 @@ const server = createServer(async (request, response) => {
     'Content-Type': 'application/json',
   });
 
-  response.end(JSON.stringify({ message: 'Not found.' }));
+  response.end(
+    JSON.stringify({
+      message: 'Not found.',
+    }),
+  );
 });
 
 server.listen(PORT, () => {
