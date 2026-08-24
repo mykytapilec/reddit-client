@@ -1,6 +1,6 @@
 import type { RedditPostsResponse } from '../types/reddit';
 
-const REDDIT_API_URL = 'https://www.reddit.com';
+const API_URL = 'http://localhost:3001';
 
 export async function fetchSubredditPosts(subreddit: string): Promise<RedditPostsResponse> {
   const normalizedSubreddit = subreddit.trim();
@@ -9,9 +9,7 @@ export async function fetchSubredditPosts(subreddit: string): Promise<RedditPost
     throw new Error('Subreddit name cannot be empty.');
   }
 
-  const response = await fetch(
-    `${REDDIT_API_URL}/r/${encodeURIComponent(normalizedSubreddit)}.json`,
-  );
+  const response = await fetch(`${API_URL}/api/reddit/${encodeURIComponent(normalizedSubreddit)}`);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch subreddit: ${response.status}`);
